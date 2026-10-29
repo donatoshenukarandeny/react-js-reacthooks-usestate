@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 function App() {
 
-  const [num1, setnum1] = useState(5)
-  const [count, setcount] = useState(0)
+  const [num1, setnum1] = useState(5);
+  const [count, setcount] = useState(0);
+  const [click, setclick] = useState(0);
+  const [post, setpost] = useState([]);
 
   const handelClick = () => {
     setnum1(3)
@@ -18,6 +20,18 @@ function App() {
     setcount(count + 1)
   }
 
+  useEffect(() => {
+    document.title = `You click ${click} times`
+  }, [count])
+
+  useEffect(() => {
+    fetch("https://jsonplaceholder.typicode.com/users/1/posts")
+    .then((resp) => resp.json())
+    .then((blogPosts) => setpost(blogPosts));
+
+    console.log("run");
+  }, []);
+
   return (
     <>
      <div id="wrapper">
@@ -28,6 +42,13 @@ function App() {
       <button onClick={decrementFunction}>-</button>
       <button onClick={incrementFunction}>+</button>
       <p>{count}</p>
+
+      <p>You click {click} times</p>
+      <button onClick={()=> setclick(click + 1)} >Click me</button>
+
+      <ul className="prod_list" style={{color:"white", "paddingLeft": "20px"}}>
+        {post && post.map((post) => <li key={post.id} style={{listStyleType:"circle"}}>{post.title}</li>)}
+      </ul>
 
      </div>
     </>
